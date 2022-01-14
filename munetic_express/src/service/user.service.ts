@@ -1,9 +1,10 @@
 import { Op } from 'sequelize';
-import { Account, User } from '../models/user';
+import User, { Account } from '../models/user';
 import * as Status from 'http-status';
-import ErrorResponse from '../modules/errorResponse';
+import ErrorResponse from '../utils/ErrorResponse';
 
-export interface IsearchUser {
+interface UserSearchOptions {
+  id?: number;
   login_id?: string;
   nickname?: string;
   name?: string;
@@ -11,115 +12,7 @@ export interface IsearchUser {
   type?: object;
 }
 
-export const createUser = async (userInfo: User) => {
-  const data = await userInfo.save();
-  const dataJSON = data.toJSON() as any;
-  delete dataJSON.login_password;
-  delete dataJSON.createdAt;
-  delete dataJSON.updatedAt;
-  return dataJSON;
-};
-
-export const deleteUser = async (userId: number) => {
-  const user = await User.findOne({
-    where: {
-      id: userId,
-    },
-  });
-  if (!user)
-    throw new ErrorResponse(Status.BAD_REQUEST, '유효하지 않은 유저 id입니다.');
-  await user.destroy();
-  return true;
-};
-
-export const searchAllUser = async (userInfo: IsearchUser) => {
-  const data = await User.findAll({
-    where: {
-      ...userInfo,
-    },
-    paranoid: false,
-  });
-  return data;
-};
-
-export const searchActiveUser = async (userInfo: IsearchUser) => {
-  const data = await User.findAll({
-    where: {
-      ...userInfo,
-    },
-  });
-  return data;
-};
-
-const userProfileFindByQuery = (id: number) => {
-  return {
-    where: {
-      id,
-    },
-    attributes: {
-      exclude: ['login_password', 'createdAt', 'updatedAt', 'deletedAt'],
-    },
-  };
-};
-
-export const findAllAppUser = async (page: number) => {
-  let limit = 10;
-  let offset = 0;
-  if (page > 1) {
-    offset = (page - 1) * limit;
-  }
-  const users = await User.findAndCountAll({
-    where: {
-      type: {
-        [Op.or]: ['Tutor', 'Student'],
-      },
-    },
-    attributes: { exclude: ['login_password'] },
-    offset,
-    limit,
-    paranoid: false,
-  });
-  if (users === null) {
-    throw new ErrorResponse(Status.BAD_REQUEST, '유저들을 불러올 수 없습니다.');
-  }
-  return users;
-};
-
-export const findAllAdminUser = async (page: number) => {
-  let limit = 10;
-  let offset = 0;
-  if (page > 1) {
-    offset = (page - 1) * limit;
-  }
-  const users = await User.findAndCountAll({
-    where: {
-      type: {
-        [Op.or]: ['Owner', 'Admin'],
-      },
-    },
-    attributes: { exclude: ['login_password'] },
-    offset,
-    limit,
-    paranoid: false,
-  });
-  if (users === null) {
-    throw new ErrorResponse(Status.BAD_REQUEST, '유저들을 불러올 수 없습니다.');
-  }
-  return users;
-};
-
-export const findUserById = async (id: number) => {
-  const user = await User.findOne(userProfileFindByQuery(id));
-  if (user === null) {
-    throw new ErrorResponse(
-      Status.BAD_REQUEST,
-      '유효하지 않은 유저 아이디입니다.',
-    );
-  }
-  return user;
-};
-
-export interface NewProfileInfoType {
+interface NewProfileInfo {
   type?: Account;
   nickname?: string;
   name_public?: boolean;
@@ -129,42 +22,90 @@ export interface NewProfileInfoType {
   login_password?: string | null;
 }
 
-export const editUserById = async (
-  id: number,
-  newProfileInfo: NewProfileInfoType,
-) => {
-  const [user] = await User.update(newProfileInfo, {
-    where: {
-      id,
-    },
-  });
-  if (user === 0) {
-    throw new ErrorResponse(
-      Status.BAD_REQUEST,
-      '유효하지 않은 유저 아이디입니다.',
-    );
-  }
-  const newUserProfile = User.findOne(userProfileFindByQuery(id));
-  if (newUserProfile === null) {
-    throw new ErrorResponse(
-      Status.INTERNAL_SERVER_ERROR,
-      '유저 프로필 업데이트를 실패하였습니다.',
-    );
-  }
-  return newUserProfile as Promise<User>;
+const UserService = {
+  createUser: async (userInfo: User) => {
+    const data = await userInfo.save();
+    return data;
+  },
+
+  deleteUser: async (id: number) => {
+    const user = await User.findByPk(id);
+    if (!user)
+      throw new ErrorResponse(
+        Status.BAD_REQUEST,
+        '유효하지 않은 유저 id입니다.',
+      );
+    await user.destroy();
+    return true;
+  },
+
+  updateUser: async (id: number, newProfileInfo: NewProfileInfo) => {
+    await User.update(newProfileInfo, {
+      where: { id },
+    });
+    const newProfile = await User.findByPk(id, {
+      attributes: {
+        exclude: ['login_password'],
+      },
+    });
+    return newProfile;
+  },
+
+  findUser: async (options: UserSearchOptions) => {
+    const data = await User.findOne({
+      where: {
+        ...options,
+      },
+      attributes: { exclude: ['login_password'] },
+      paranoid: false,
+    });
+    return data;
+  },
+
+  findActiveUser: async (options: UserSearchOptions) => {
+    const data = await User.findOne({
+      where: { ...options },
+      attributes: { exclude: ['login_password'] },
+    });
+    return data;
+  },
+
+  findActiveUserWithPassword: async (options: UserSearchOptions) => {
+    const data = await User.findOne({
+      where: { ...options },
+    });
+    return data;
+  },
+
+  getAllAppUsers: async (offset: number, limit: number) => {
+    const users = await User.findAndCountAll({
+      where: {
+        type: {
+          [Op.or]: ['Tutor', 'Student'],
+        },
+      },
+      attributes: { exclude: ['login_password'] },
+      offset,
+      limit,
+      paranoid: false,
+    });
+    return users;
+  },
+
+  getAllAdminUsers: async (offset: number, limit: number) => {
+    const users = await User.findAndCountAll({
+      where: {
+        type: {
+          [Op.or]: ['Owner', 'Admin'],
+        },
+      },
+      attributes: { exclude: ['login_password'] },
+      offset,
+      limit,
+      paranoid: false,
+    });
+    return users;
+  },
 };
 
-export const findAllUserById = async (id: number) => {
-  const user = await User.findOne({
-    where: { id: id },
-    attributes: { exclude: ['login_password'] },
-    paranoid: false,
-  });
-  if (user === null) {
-    throw new ErrorResponse(
-      Status.BAD_REQUEST,
-      '유효하지 않은 유저 아이디입니다.',
-    );
-  }
-  return user;
-};
+export default UserService;

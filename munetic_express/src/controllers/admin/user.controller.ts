@@ -1,19 +1,20 @@
 import { RequestHandler } from 'express';
 import * as Status from 'http-status';
 
-import { ResJSON } from '../../modules/types';
-import ErrorResponse from '../../modules/errorResponse';
-import * as UserService from '../../service/user.service';
+import { ResJSON } from '../../utils/response';
+import ErrorResponse from '../../utils/ErrorResponse';
+import UserService from '../../service/user.service';
 
 export const getAppUserList: RequestHandler = async (req, res, next) => {
   try {
-    let result: ResJSON;
-    const users = await UserService.findAllAppUser(Number(req.query.page));
-    result = new ResJSON(
-      '모든 유저 프로필을 불러오는데 성공하였습니다.',
-      users,
-    );
-    res.status(Status.OK).json(result);
+    const offset = Number(req.query.offset);
+    const limit = Number(req.query.limit);
+    const users = await UserService.getAllAppUsers(offset, limit);
+    res
+      .status(Status.OK)
+      .json(
+        new ResJSON('모든 유저 프로필을 불러오는데 성공하였습니다.', users),
+      );
   } catch (err) {
     next(err);
   }
@@ -22,21 +23,24 @@ export const getAppUserList: RequestHandler = async (req, res, next) => {
 export const getAdminUserList: RequestHandler = async (req, res, next) => {
   try {
     if (req.user?.type === 'Owner') {
-      let result: ResJSON;
-      const users = await UserService.findAllAdminUser(Number(req.query.page));
-      result = new ResJSON(
-        '모든 어드민 유저 프로필을 불러오는데 성공하였습니다.',
-        users,
-      );
-      res.status(Status.OK).json(result);
-    } else {
+      const offset = Number(req.query.offset);
+      const limit = Number(req.query.limit);
+      const users = await UserService.getAllAdminUsers(offset, limit);
+      res
+        .status(Status.OK)
+        .json(
+          new ResJSON(
+            '모든 어드민 유저 프로필을 불러오는데 성공하였습니다.',
+            users,
+          ),
+        );
+    } else
       next(
         new ErrorResponse(
           Status.UNAUTHORIZED,
           '권한이 없습니다. 관리자에게 문의해주세요.',
         ),
       );
-    }
   } catch (err) {
     next(err);
   }
@@ -47,11 +51,12 @@ export const getUserInfo: RequestHandler = async (req, res, next) => {
     if (!req.params.id) {
       res.status(Status.BAD_REQUEST).send('유저 아이디가 없습니다.');
     }
-    const userId = parseInt(req.params.id, 10);
-    const user = await UserService.findAllUserById(userId);
-    res
-      .status(Status.OK)
-      .json(new ResJSON('유저 프로필을 불러오는데 성공하였습니다.', user));
+    const id = parseInt(req.params.id, 10);
+    const user = await UserService.findUser({ id });
+    if (user)
+      res
+        .status(Status.OK)
+        .json(new ResJSON('유저 프로필을 불러오는데 성공하였습니다.', user));
   } catch (err) {
     next(err);
   }
@@ -59,8 +64,8 @@ export const getUserInfo: RequestHandler = async (req, res, next) => {
 
 export const doubleCheck: RequestHandler = async (req, res, next) => {
   try {
-    const userList = await UserService.searchAllUser(req.query);
-    if (userList.length === 0) {
+    const user = await UserService.findUser(req.query);
+    if (!user) {
       res
         .status(Status.OK)
         .json(new ResJSON('사용할 수 있는 유저 정보 입니다.', {}));
@@ -90,10 +95,11 @@ export const deleteUserByAdmin: RequestHandler = async (req, res, next) => {
 export const patchUserByAdmin: RequestHandler = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.id, 10);
-    const user = await UserService.editUserById(userId, req.body);
-    res
-      .status(Status.OK)
-      .json(new ResJSON('유저 프로필을 성공적으로 수정하였습니다.', user));
+    const user = await UserService.updateUser(userId, req.body);
+    if (user)
+      res
+        .status(Status.OK)
+        .json(new ResJSON('유저 프로필을 성공적으로 수정하였습니다.', user));
   } catch (err) {
     next(err);
   }

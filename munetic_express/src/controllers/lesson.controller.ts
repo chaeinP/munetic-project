@@ -12,7 +12,7 @@ import {
   LessonEditable,
   removeLesson,
 } from '../service/lesson.service';
-import { ResJSON, ResponseData } from '../types';
+import { ResJSON, ResponseData } from '../utils/response';
 
 // need preprocessing of JSON-parser
 

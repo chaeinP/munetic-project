@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize';
 import { Category } from './category';
 import { Lesson } from './lesson';
-import { User, Gender, Account } from './user';
-import * as UserService from '../service/user.service';
+import User, { Gender, Account } from './user';
+import UserService from '../service/user.service';
 import * as CategoryService from '../service/category.service';
 import { categoryLists } from '../data/categoryList';
 

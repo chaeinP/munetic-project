@@ -1,9 +1,9 @@
 import { findAllLessonsByUserId } from './../../service/lesson.service';
-import { ResJSON } from './../../types';
+import { ResJSON } from '../../utils/response';
 import { RequestHandler } from 'express';
 import * as Status from 'http-status';
 import * as LessonService from '../../service/lesson.service';
-import ErrorResponse from '../../modules/errorResponse';
+import ErrorResponse from '../../utils/ErrorResponse';
 
 export const getAllLessons: RequestHandler = async (req, res, next) => {
   try {

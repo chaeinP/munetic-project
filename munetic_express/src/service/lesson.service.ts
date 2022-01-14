@@ -1,8 +1,8 @@
 import { FindOptions } from 'sequelize/dist';
 import { Category, categoryAttributes } from '../models/category';
 import { Lesson, lessonAttributes } from '../models/lesson';
-import { User, userAttributes } from '../models/user';
-import ErrorResponse from '../modules/errorResponse';
+import User, { userAttributes } from '../models/user';
+import ErrorResponse from '../utils/ErrorResponse';
 import * as Status from 'http-status';
 
 /**

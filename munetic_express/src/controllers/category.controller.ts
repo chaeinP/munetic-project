@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import * as Status from 'http-status';
-import { ResJSON } from '../modules/types';
+import { ResJSON } from '../utils/response';
 import * as CategoryService from '../service/category.service';
 
 export const getAllCategory: RequestHandler = async (req, res, next) => {
