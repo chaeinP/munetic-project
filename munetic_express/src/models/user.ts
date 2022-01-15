@@ -53,7 +53,7 @@ export type userCreationAttributes = Optional<
   | 'deletedAt'
 >;
 
-export class User
+export default class User
   extends Model<userAttributes, userCreationAttributes>
   implements userAttributes
 {

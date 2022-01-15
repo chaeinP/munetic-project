@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import * as Auth from '../controllers/auth.controller';
-import passport from 'passport';
-import { jwtAuth, jwtReAuth } from '../modules/jwt.local.strategy';
+import Auth from '../controllers/auth.controller';
+import { ptJwt } from '../utils/PassportJwt';
 
 export const path = '/auth';
 export const router = Router();
 
 router.post('/login', Auth.login);
-router.get('/logout', jwtAuth(), Auth.logout);
 router.post('/signup', Auth.signup);
-router.get('/refresh', jwtReAuth(), Auth.refresh);
 router.get('/signup/user', Auth.isValidInfo);
+router.get('/logout', ptJwt.access, Auth.logout);
+router.get('/refresh', ptJwt.refresh, Auth.refresh);

@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import * as lesson from '../../controllers/admin/lesson.controller';
-import passport from 'passport';
-import { jwtAdminAuth } from '../../modules/jwt.admin.strategy';
+import AdminLesson from '../../controllers/admin/lesson.controller';
+import { ptJwtAdmin } from '../../utils/PassportJwtAdmin';
 
 export const path = '/lesson';
 export const router = Router();
 
-router.get('/', jwtAdminAuth(), lesson.getAllLessons);
-router.get('/:id', jwtAdminAuth(), lesson.getLessonById);
-router.delete('/:id', jwtAdminAuth(), lesson.deleteLesson);
-router.get('/user/:id', jwtAdminAuth(), lesson.getUserLessons);
+router.get('/', ptJwtAdmin.access(), AdminLesson.getAllLessons);
+router.get('/:id', ptJwtAdmin.access(), AdminLesson.getLessonById);
+router.delete('/:id', ptJwtAdmin.access(), AdminLesson.deleteLesson);
+router.get('/user/:id', ptJwtAdmin.access(), AdminLesson.getUserLessons);

@@ -1,10 +1,9 @@
 import { Sequelize } from 'sequelize';
-import { Category } from './category';
-import { Lesson } from './lesson';
-import { User, Gender, Account } from './user';
-import * as UserService from '../service/user.service';
+import Category from './category';
+import Lesson from './lesson';
+import User, { Gender, Account } from './user';
+import UserService from '../service/user.service';
 import * as CategoryService from '../service/category.service';
-import { categoryLists } from '../data/categoryList';
 
 const { development } = require('../config/config');
 const { host, port, database, username, password } = development;
@@ -54,6 +53,7 @@ export function Models() {
   });
   return sequelize;
 }
+
 export function createFirstOwnerAccount() {
   const admin = {
     login_id: 'munetic@gmail.com',
@@ -73,10 +73,17 @@ export function createFirstOwnerAccount() {
 }
 
 export function createCategories() {
+  const categoryLists = [
+    { name: '전체' },
+    { name: '기타' },
+    { name: '바이올린' },
+    { name: '드럼' },
+    { name: '피아노' },
+    { name: '하프' },
+    { name: '첼로' },
+  ];
   categoryLists.map(category => {
-    CategoryService.createUser(new Category({ ...category })).catch(e =>
-      console.log(e),
-    );
+    Category.create(category as Category).catch(e => console.log(e));
   });
   console.log('🎼 App:CategoryLists created');
 }

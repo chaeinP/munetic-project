@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-import { Dialect } from 'sequelize/dist';
 dotenv.config();
 
 export const development = {

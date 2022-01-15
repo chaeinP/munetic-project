@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import * as Auth from '../../controllers/admin/auth.controller';
-import { jwtAdminAuth, jwtReAdminAuth } from '../../modules/jwt.admin.strategy';
+import AdminAuth from '../../controllers/admin/auth.controller';
+import { ptJwtAdmin } from '../../utils/PassportJwtAdmin';
 
 export const path = '/auth';
 export const router = Router();
 
-router.post('/signup', jwtAdminAuth(), Auth.signup);
-router.post('/login', Auth.login);
-router.get('/logout', jwtAdminAuth(), Auth.logout);
-router.get('/refresh', jwtReAdminAuth(), Auth.refresh);
-router.patch('/password', jwtAdminAuth(), Auth.updatePassword);
+router.post('/login', AdminAuth.login);
+router.post('/signup', ptJwtAdmin.access(), AdminAuth.signup);
+router.get('/logout', ptJwtAdmin.access(), AdminAuth.logout);
+router.get('/refresh', ptJwtAdmin.refresh(), AdminAuth.refresh);
+router.patch('/password', ptJwtAdmin.access(), AdminAuth.updatePassword);

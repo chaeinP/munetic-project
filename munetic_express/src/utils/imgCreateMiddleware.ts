@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
     cb(null, path.basename(file.originalname, ext) + '-' + Date.now() + ext);
   },
 });
+
 const storageConfig = multer({
   storage: storage,
   limits: { fileSize: 1000000 },

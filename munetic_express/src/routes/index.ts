@@ -8,25 +8,12 @@ import * as category from './category.routes';
 import * as admin from './admin/admin.routes';
 
 import passport from 'passport';
-import AdminStrategy from '../modules/admin.strategy';
-import {
-  JwtAdminAccessStrategy,
-  JwtAdminRefreshStrategy,
-} from '../modules/jwt.admin.strategy';
+import { ptLocal } from '../utils/PassportLocal';
+import { ptJwt } from '../utils/PassportJwt';
 
-import LocalStrategy from '../modules/local.strategy';
-import {
-  JwtAccessStrategy,
-  JwtRefreshStrategy,
-} from '../modules/jwt.local.strategy';
-
-passport.use('local', LocalStrategy());
-passport.use('jwt', JwtAccessStrategy());
-passport.use('jwtRefresh', JwtRefreshStrategy());
-
-passport.use('admin', AdminStrategy());
-passport.use('jwt-admin', JwtAdminAccessStrategy());
-passport.use('jwtRefresh-admin', JwtAdminRefreshStrategy());
+passport.use('local', ptLocal.strategy());
+passport.use('jwt', ptJwt.accessStrategy());
+passport.use('jwtRefresh', ptJwt.refreshStrategy());
 
 router.use(auth.path, auth.router);
 router.use(user.path, user.router);

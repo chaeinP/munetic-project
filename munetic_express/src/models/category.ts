@@ -14,7 +14,7 @@ type categoryCreationAttributes = Optional<
   'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
 >;
 
-export class Category
+export default class Category
   extends Model<categoryAttributes, categoryCreationAttributes>
   implements categoryAttributes
 {

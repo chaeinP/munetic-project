@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { router } from './routes';
 import { createCategories, createFirstOwnerAccount, Models } from './models';
-import errorHandler from './modules/errorHandler';
+import errorHandler from './utils/errorHandler';
 import passport from 'passport';
 
 const app: express.Application = express();
