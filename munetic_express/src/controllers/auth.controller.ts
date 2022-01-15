@@ -5,9 +5,9 @@ import bcrypt from 'bcrypt';
 
 import User from '../models/user';
 import UserService from '../service/user.service';
-import { ResJSON } from '../utils/response';
+import ResJSON from '../utils/ResJSON';
 import ErrorResponse from '../utils/ErrorResponse';
-import * as Reshape from './../utils/reshape';
+import Reshape from '../utils/Reshape';
 import Jwt from '../utils/Jwt';
 
 const Auth: {

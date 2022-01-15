@@ -4,11 +4,11 @@ export interface lessonAttributes {
   id: number;
   tutor_id: number;
   category_id: number;
-  title: string | null;
+  title: string;
   price: number | null;
   location: string | null;
   minute_per_lesson: number | null;
-  content: string | null;
+  content: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -19,7 +19,7 @@ export type lessonCreationAttributes = Optional<
   'title' | 'price' | 'location' | 'minute_per_lesson' | 'content'
 >;
 
-export class Lesson
+export default class Lesson
   extends Model<lessonAttributes, lessonCreationAttributes>
   implements lessonAttributes
 {
@@ -28,9 +28,9 @@ export class Lesson
   public category_id!: number;
   public title!: string;
   public price!: number | null;
-  public location!: string | null;
+  public location!: string;
   public minute_per_lesson!: number | null;
-  public content!: string | null;
+  public content!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date;
@@ -47,18 +47,10 @@ export class Lesson
         tutor_id: {
           allowNull: false,
           type: DataTypes.INTEGER,
-          // references: {
-          //   model: 'user',
-          //   key: 'id',
-          // },
         },
         category_id: {
           allowNull: false,
           type: DataTypes.INTEGER,
-          // references: {
-          //   model: 'category',
-          //   key: 'id',
-          // },
         },
         title: {
           allowNull: false,
@@ -69,7 +61,7 @@ export class Lesson
           type: DataTypes.INTEGER,
         },
         location: {
-          allowNull: true,
+          allowNull: false,
           type: DataTypes.STRING(128),
         },
         minute_per_lesson: {
@@ -77,7 +69,7 @@ export class Lesson
           type: DataTypes.INTEGER,
         },
         content: {
-          allowNull: true,
+          allowNull: false,
           type: DataTypes.STRING(8192),
         },
         createdAt: {

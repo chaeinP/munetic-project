@@ -1,6 +1,6 @@
 export interface ResponseData {}
 
-export class ResJSON {
+export default class ResJSON {
   constructor(
     public readonly message: string,
     public readonly data: ResponseData = {},

@@ -8,5 +8,5 @@ export const router = Router();
 router.post('/login', Auth.login);
 router.post('/signup', Auth.signup);
 router.get('/signup/user', Auth.isValidInfo);
-router.get('/logout', ptJwt.access(), Auth.logout);
-router.get('/refresh', ptJwt.refresh(), Auth.refresh);
+router.get('/logout', ptJwt.access, Auth.logout);
+router.get('/refresh', ptJwt.refresh, Auth.refresh);
