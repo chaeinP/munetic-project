@@ -1,0 +1,387 @@
+swagger: '2.0'
+info:
+  title: API Title
+  version: '1.0'
+tags:
+  - name: Auth
+    description: Authentication & Authorization
+  - name: Users
+    description: App User Information
+  - name: Lessons
+    description: Lesson Information
+  - name: Category
+    description: Category Lists
+  - name: Admin Auth
+    description: Admin Authentication & Authorization
+  - name: Admin Users
+    description: All User Information
+paths:
+  # admin auth
+
+  /admin/auth/signup:
+    post:
+      tags:
+        - Admin Auth
+      summary: Add new admin user
+      description: owner 권한을 가진 유저만 이 api를 통해 새 어드민 유저를 추가할 수 있습니다.
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: accessToken
+          type: string
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Admin Login'
+      responses:
+        '200':
+          description: logout success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'logout complete'
+              data:
+                type: object
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: Unauthorized
+
+  /admin/auth/password:
+    patch:
+      tags:
+        - Admin Auth
+      summary: update password
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              login_password:
+                type: string
+      responses:
+        '200':
+          description: 'Login success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: '비밀번호가 변경되었습니다.'
+              data:
+                type: object
+        '400':
+          description: 'Bad Request'
+          schema:
+            type: string
+            example: '유효하지 않은 유저 아이디입니다.'
+
+  # admin lesson
+  /admin/lesson?:
+    get:
+      tags:
+        - Admin Lesson
+      summary: Get All Lessons
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: offset
+          in: query
+          type: integer
+          format: int32
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          required: true
+      responses:
+        '200':
+          description: request success
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: 응답에 성공하였습니다.
+              data:
+                $ref: '#/definitions/AdminLessons'
+        '401':
+          description: Unathorized
+          schema:
+            type: string
+            example: Unauthorized
+  /admin/lesson/{id}:
+    get:
+      tags:
+        - Admin Lesson
+      summary: Get Lesson By Id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: id
+          in: path
+          type: number
+          required: true
+      responses:
+        '200':
+          description: request success
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: 레슨 게시물을 불러오는데 성공하였습니다.
+              data:
+                $ref: '#/definitions/AdminLesson'
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: 유효하지 않은 레슨 아이디입니다.
+    delete:
+      tags:
+        - Admin Lesson
+      summary: Delete Lesson By Id
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: id
+          in: path
+          type: number
+          required: true
+      responses:
+        '200':
+          description: request success
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: 게시물이 정상적으로 삭제되었습니다.
+              data:
+                type: object
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: 유효하지 않은 레슨 아이디입니다.
+
+  /admin/lesson/user/{id}?:
+    get:
+      tags:
+        - Admin Lesson
+      summary: Get All User Lessons
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: offset
+          in: query
+          type: integer
+          format: int32
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          required: true
+      responses:
+        '200':
+          description: request success
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: 응답에 성공하였습니다.
+              data:
+                $ref: '#/definitions/AdminLessons'
+        '401':
+          description: Unathorized
+          schema:
+            type: string
+            example: Unauthorized
+
+definitions:
+  AdminLessons:
+    type: object
+    required:
+      - count
+      - rows
+    properties:
+      count:
+        type: integer
+      rows:
+        type: array
+        items:
+          $ref: '#/definitions/AdminLesson'
+  AdminLesson:
+    type: object
+    properties:
+      lesson_id:
+        type: number
+      tutor_id:
+        type: number
+      title:
+        type: string
+      price:
+        type: number
+      location:
+        type: string
+      minute_per_lesson:
+        type: number
+      content:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      deletedAt:
+        type: string
+      Category.name:
+        type: string
+      User.name:
+        type: string
+      User.nickname:
+        type: string
+      User.name_public:
+        type: number
+      User.phone_number:
+        type: string
+      User.birth:
+        type: string
+      User.gender:
+        type: string
+      User.image_url:
+        type: string
+
+  Admin Login:
+    type: object
+    required:
+      - 'email'
+      - 'login_password'
+      - 'name'
+      - 'type'
+    properties:
+      email:
+        type: string
+      login_password:
+        type: string
+      name:
+        type: string
+      type:
+        enum:
+          - Admin
+          - Owner
+  Lesson:
+    type: object
+    required:
+      - lesson_id
+      - tutor_id
+      - gender
+      - age
+    properties:
+      lesson_id:
+        description: 'the id of the lesson ad'
+        type: number
+        format: int32
+      tutor_id:
+        description: 'the id of the tutor'
+        type: number
+        format: int32
+      tutor_name:
+        description: 'name or nickname of the tutor'
+        type: string
+      profile_pic:
+        description: 'url of a tutor profile picture'
+        type: string
+      editable:
+        $ref: '#/definitions/LessonEditable'
+    example:
+      summary: 'an example of a lesson'
+      description: 'the description!'
+      lesson_id: 14
+      tutor_id: 3
+      tutor_name: 'santa claus'
+      gender: female
+      age: 33
+      profile_pic: 'http://munetic.42cadet.kr/img/42'
+      editable:
+        $ref: '#/definitions/LessonEditable/example'
+  LessonEditable:
+    type: object
+    properties:
+      category:
+        description: 'the category of the lesson'
+        type: string
+      title:
+        description: 'name of the lesson ad'
+        type: string
+      price:
+        description: 'price per one lesson, based on KRW'
+        type: number
+        format: int32
+      location:
+        description: available location of the tutor'
+        type: string
+      minute_per_lesson:
+        type: number
+        format: int32
+      content:
+        description: 'introduction of the lesson by the tutor'
+        type: string
+    example:
+      category: classic piano
+      title: some title
+      price: 120000
+      location: some location
+      minute per lesson: 60
+      content: some introduction

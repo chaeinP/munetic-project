@@ -1,56 +1,25 @@
 import { FindOptions } from 'sequelize/dist';
+import * as Status from 'http-status';
+
 import Category from '../models/category';
 import Lesson from '../models/lesson';
 import User from '../models/user';
 import ErrorResponse from '../utils/ErrorResponse';
-import * as Status from 'http-status';
+import { Request } from 'express';
 
 const lessonQueryOptions: FindOptions = {
-  attributes: [
-    ['id', 'lesson_id'],
-    'tutor_id',
-    'title',
-    'price',
-    'location',
-    'minute_per_lesson',
-    'content',
-  ],
   include: [
     { model: Category, attributes: ['name'] },
     {
       model: User,
-      attributes: [
-        'name',
-        'nickname',
-        'name_public',
-        'phone_number',
-        'birth',
-        'gender',
-        'image_url',
-      ],
+      attributes: ['id', 'login_id', 'name', 'nickname', 'image_url'],
+      paranoid: false,
     },
   ],
 };
 
 const lessonQueryOptionsforAll: FindOptions = {
   ...lessonQueryOptions,
-  include: [
-    { model: Category, attributes: ['name'] },
-    {
-      model: User,
-      attributes: [
-        'login_id',
-        'name',
-        'nickname',
-        'name_public',
-        'phone_number',
-        'birth',
-        'gender',
-        'image_url',
-      ],
-      paranoid: false,
-    },
-  ],
   paranoid: false,
 };
 
@@ -101,7 +70,7 @@ const LessonService = {
     return newLesson;
   },
 
-  deleteLesson: async (id: number) => {
+  deleteLesson: async (id: number, user: Request['user']) => {
     const lesson = await Lesson.findOne({
       where: { id },
     });
@@ -109,6 +78,11 @@ const LessonService = {
       throw new ErrorResponse(
         Status.BAD_REQUEST,
         '해당하는 레슨을 찾을 수 없습니다.',
+      );
+    if (user!.id !== lesson.tutor_id)
+      throw new ErrorResponse(
+        Status.FORBIDDEN,
+        '레슨 작성자가 일치하지 않습니다.',
       );
     await lesson.destroy();
     return true;
@@ -132,6 +106,7 @@ const LessonService = {
       offset,
       limit,
       raw: true,
+      nest: true,
       where: { tutor_id: id },
     });
     return lessonList;
@@ -143,6 +118,7 @@ const LessonService = {
       offset,
       limit,
       raw: true,
+      nest: true,
     });
     return lessonLists;
   },
@@ -161,6 +137,7 @@ const LessonService = {
       offset,
       limit,
       raw: true,
+      nest: true,
     });
     return lessonLists;
   },
@@ -171,6 +148,7 @@ const LessonService = {
       offset,
       limit,
       raw: true,
+      nest: true,
     });
     return lessonLists;
   },

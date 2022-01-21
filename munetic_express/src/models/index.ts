@@ -3,7 +3,6 @@ import Category from './category';
 import Lesson from './lesson';
 import User, { Gender, Account } from './user';
 import UserService from '../service/user.service';
-import * as CategoryService from '../service/category.service';
 
 const { development } = require('../config/config');
 const { host, port, database, username, password } = development;
@@ -37,14 +36,14 @@ export function Models() {
   User.initModel(sequelize);
   Lesson.initModel(sequelize);
 
-  Category.hasMany(Lesson);
+  // Category.hasMany(Lesson);
   Lesson.belongsTo(Category, {
     foreignKey: {
       name: 'category_id',
       allowNull: false,
     },
   });
-  User.hasMany(Lesson);
+  // User.hasMany(Lesson);
   Lesson.belongsTo(User, {
     foreignKey: {
       name: 'tutor_id',
@@ -57,8 +56,7 @@ export function Models() {
 export function createFirstOwnerAccount() {
   const admin = {
     login_id: 'munetic@gmail.com',
-    login_password:
-      '$2b$10$9ZgatOfeQp5Di8QLo21ODuOFjrm1/zKwgOkJIPD7Yu0Ws.opQTeqK',
+    login_password: '1234',
     name: '대표님',
     nickname: 'munetic@gmail.com',
     birth: new Date(),
@@ -67,7 +65,7 @@ export function createFirstOwnerAccount() {
     email: 'munetic@gmail.com',
   };
 
-  UserService.createUser(new User({ ...admin })).then(() =>
+  UserService.createUser(admin).then(() =>
     console.log('👑 Admin:First Owner account created'),
   );
 }

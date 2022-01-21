@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+
 import UserService from '../service/user.service';
 import PassportLocal from './PassportLocal';
 

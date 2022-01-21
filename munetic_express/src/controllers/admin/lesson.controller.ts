@@ -16,11 +16,7 @@ const AdminLesson: {
       const offset = parseInt(req.query.offset as string, 10);
       const limit = parseInt(req.query.limit as string, 10);
       const lessons = await LessonService.getAllLessons(offset, limit);
-      res
-        .status(Status.OK)
-        .json(
-          new ResJSON('모든 레슨 프로필을 불러오는데 성공하였습니다.', lessons),
-        );
+      res.status(Status.OK).json(new ResJSON(lessons));
     } catch (err) {
       next(err);
     }
@@ -36,11 +32,7 @@ const AdminLesson: {
         offset,
         limit,
       );
-      res
-        .status(Status.OK)
-        .json(
-          new ResJSON('모든 유저 게시물을 불러오는데 성공하였습니다.', lessons),
-        );
+      res.status(Status.OK).json(new ResJSON(lessons));
     } catch (err) {
       next(err);
     }
@@ -50,12 +42,7 @@ const AdminLesson: {
     try {
       const lessonId = parseInt(req.params.id, 10);
       const lesson = await LessonService.findLesson(lessonId);
-      if (lesson)
-        res
-          .status(Status.OK)
-          .json(
-            new ResJSON('레슨 게시물을 불러오는데 성공하였습니다.', lesson),
-          );
+      if (lesson) res.status(Status.OK).json(new ResJSON(lesson));
     } catch (err) {
       next(err);
     }
@@ -64,11 +51,9 @@ const AdminLesson: {
   deleteLesson: async (req, res, next) => {
     try {
       const id = parseInt(req.params.id, 10);
-      const result = await LessonService.deleteLesson(id);
+      const result = await LessonService.deleteLesson(id, req.user);
       if (!result) next(new ErrorResponse(Status.BAD_REQUEST, ''));
-      res
-        .status(Status.OK)
-        .json(new ResJSON('게시물이 정상적으로 삭제되었습니다.', {}));
+      res.status(Status.OK).json(new ResJSON({}));
     } catch (err) {
       next(err);
     }

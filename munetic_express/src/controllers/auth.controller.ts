@@ -1,21 +1,15 @@
 import { RequestHandler } from 'express';
 import * as Status from 'http-status';
 import passport from 'passport';
-import bcrypt from 'bcrypt';
 
-import User from '../models/user';
-import UserService from '../service/user.service';
 import ResJSON from '../utils/ResJSON';
 import ErrorResponse from '../utils/ErrorResponse';
-import Reshape from '../utils/Reshape';
 import Jwt from '../utils/Jwt';
 
 const Auth: {
   login: RequestHandler;
   logout: RequestHandler;
-  signup: RequestHandler;
   refresh: RequestHandler;
-  isValidInfo: RequestHandler;
 } = {
   login: async (req, res, next) => {
     try {
@@ -25,7 +19,7 @@ const Auth: {
         const accessToken = await Jwt.accessToken(user);
         const { token, cookieOptions } = await Jwt.refreshToken(user);
         res.cookie('refreshToken', token, cookieOptions);
-        res.status(Status.OK).json(new ResJSON('request success', accessToken));
+        res.status(Status.OK).json(new ResJSON(accessToken));
       })(req, res, next);
     } catch (err) {
       next(err);
@@ -35,19 +29,7 @@ const Auth: {
   logout: async (req, res, next) => {
     try {
       res.clearCookie('refreshToken');
-      res.status(Status.OK).json(new ResJSON('logout complete', {}));
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  signup: async (req, res, next) => {
-    try {
-      const userInfo = Reshape.userObject(req);
-      userInfo.login_password = bcrypt.hashSync(userInfo.login_password, 10);
-      const result = await UserService.createUser(new User({ ...userInfo }));
-      if (result)
-        res.status(Status.CREATED).json(new ResJSON('request success', {}));
+      res.status(Status.NO_CONTENT);
     } catch (err) {
       next(err);
     }
@@ -56,24 +38,7 @@ const Auth: {
   refresh: async (req, res, next) => {
     try {
       const accessToken = await Jwt.accessToken(req.user);
-      res.status(Status.OK).json(new ResJSON('request success', accessToken));
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  isValidInfo: async (req, res, next) => {
-    try {
-      const userList = await UserService.findUser(req.query);
-      if (!userList) {
-        res
-          .status(Status.OK)
-          .json(new ResJSON('사용할 수 있는 유저 정보 입니다.', {}));
-      } else
-        throw new ErrorResponse(
-          Status.BAD_REQUEST,
-          '이미 존재하는 유저 정보 입니다.',
-        );
+      res.status(Status.OK).json(new ResJSON(accessToken));
     } catch (err) {
       next(err);
     }

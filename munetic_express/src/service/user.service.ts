@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
-import User, { Account } from '../models/user';
 import * as Status from 'http-status';
+
+import User, { Account, Gender, userCreationAttributes } from '../models/user';
 import ErrorResponse from '../utils/ErrorResponse';
 
 interface UserSearchOptions {
@@ -10,6 +11,18 @@ interface UserSearchOptions {
   name?: string;
   email?: string;
   type?: object;
+}
+
+interface NewUserInfo {
+  login_id: string;
+  login_password: string;
+  name: string;
+  birth: Date;
+  gender: Gender;
+  nickname: string;
+  type: Account;
+  email?: string | null;
+  phone_number?: string | null;
 }
 
 interface NewProfileInfo {
@@ -23,9 +36,12 @@ interface NewProfileInfo {
 }
 
 const UserService = {
-  createUser: async (userInfo: User) => {
-    const data = await userInfo.save();
-    return data;
+  createUser: async (userInfo: NewUserInfo) => {
+    const newUser = new User(userInfo);
+    return await newUser.save().then((data: userCreationAttributes) => {
+      delete data.login_password;
+      return data;
+    });
   },
 
   deleteUser: async (id: number) => {
@@ -51,11 +67,9 @@ const UserService = {
     return newProfile;
   },
 
-  findUser: async (options: UserSearchOptions) => {
-    const data = await User.findOne({
-      where: {
-        ...options,
-      },
+  findUserList: async (options: UserSearchOptions) => {
+    const data = await User.findAll({
+      where: { ...options },
       attributes: { exclude: ['login_password'] },
       paranoid: false,
     });

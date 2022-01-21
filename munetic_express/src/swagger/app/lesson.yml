@@ -1,0 +1,235 @@
+paths:
+  /lessons/:
+    get:
+      tags:
+        - Lessons
+      summary: Get all active Lessons
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: offset
+          in: query
+          type: integer
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            properties:
+              message:
+                type: string
+                example: request success
+              data:
+                $ref: '#definitions/LessonCounts'
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: 'offset/limit 조건이 없습니다.'
+
+    post:
+      tags:
+        - Lessons
+      summary: 'Add new lesson'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - name: 'tutor_id'
+          in: path
+          type: number
+          required: true
+        - name: 'body'
+          in: body
+          description: 'lesson information for submission'
+          schema:
+            $ref: '#definitions/LessonEditable'
+          required: true
+      responses:
+        '201':
+          description: 'Created: added a lesson successfully to database'
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: 'The lesson is succesfully submitted'
+              data:
+                description: 'The lesson information just added'
+                $ref: '#definitions/Lesson'
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: 'Unauthorized'
+        '403':
+          description: 'Forbidden'
+          schema:
+            type: string
+            example: '레슨 등록은 Tutor 계정만 가능합니다.'
+
+  /lessons/{id}:
+    get:
+      tags:
+        - Lessons
+      summary: 'Get existing lesson by lesson id'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: 'id'
+          in: path
+          description: 'lesson id'
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: request success
+              data:
+                $ref: '#definitions/Lesson'
+        '404':
+          description: Not Found
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              type: string
+              example: 해당하는 레슨이 없습니다.
+
+    patch:
+      tags:
+        - Lessons
+      summary: 'Update lesson'
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - name: 'id'
+          in: path
+          description: 'lesson id'
+          required: true
+        - name: 'body'
+          in: body
+          description: 'lesson fields to update lesson information'
+          schema:
+            $ref: '#definitions/LessonEditable'
+          required: true
+      responses:
+        '200':
+          description: succesfully got lesson info
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: request success
+              data:
+                $ref: '#definitions/Lesson'
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: 'Unauthorized'
+
+    delete:
+      tags:
+        - Lessons
+      summary: 'Delete lesson'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - name: 'id'
+          in: path
+          description: 'lesson id'
+          type: integer
+          required: true
+      responses:
+        '204':
+          description: 'successfully deleted'
+        '400':
+          description: 'Bad Request'
+          schema:
+            type: string
+            example: '해당하는 레슨을 찾을 수 없습니다.'
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: 'Unauthorized'
+        '403':
+          description: 'Forbidden'
+          schema:
+            type: string
+            example: '레슨 작성자가 일치하지 않습니다.'
+        '404':
+          description: 'Not Found'
+          schema:
+            type: string
+            example: '요청 id에 해당하는 레슨을 찾을 수 없습니다.'
+
+  /lesson/user/{id}:
+    get:
+      tags:
+        - Lessons
+      summary: 'Get user post list'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          description: user id;
+          required: true
+        - name: offset
+          in: query
+          type: integer
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          required: true
+      responses:
+        '200':
+          description: 'succesfully got user lesson list'
+          schema:
+            required:
+              - message
+              - data
+            properties:
+              message:
+                type: string
+                example: request success
+              data:
+                $ref: '#definitions/LessonLists'
+        '400':
+          description: 'Bad Request'
+          schema:
+            type: string
+            example: 'offset/limit 조건이 없습니다.'
+
+definitions:
+  $ref: '../components.yml'

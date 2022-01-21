@@ -1,7 +1,8 @@
+import '@types/jest';
 import * as Status from 'http-status';
 import * as httpMocks from 'node-mocks-http';
-import ErrorResponse from '../../modules/errorResponse';
-import errorHandler from '../../modules/errorHandler';
+import ErrorResponse from '../../utils/errorResponse';
+import errorHandler from '../../utils/errorHandler';
 
 describe('module : errorHandler unit test', () => {
   let req: any, res: any, next: any;

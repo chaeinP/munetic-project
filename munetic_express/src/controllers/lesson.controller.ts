@@ -19,10 +19,14 @@ const Lesson: {
       if (req.user?.type === 'Tutor') {
         const newLessonInfo = Reshape.lessonObject(req);
         const result = LessonService.createLesson(newLessonInfo);
-        res
-          .status(Status.OK)
-          .json(new ResJSON('레슨 등록에 성공했습니다.', result));
-      } else next(new ErrorResponse(Status.UNAUTHORIZED, '권한이 없습니다.'));
+        res.status(Status.OK).json(new ResJSON(result));
+      } else
+        next(
+          new ErrorResponse(
+            Status.FORBIDDEN,
+            '레슨 등록은 Tutor 계정만 가능합니다.',
+          ),
+        );
     } catch (err) {
       next(err);
     }
@@ -35,9 +39,7 @@ const Lesson: {
         Number(req.params.id),
         newLessonInfo,
       );
-      res
-        .status(Status.OK)
-        .json(new ResJSON('레슨이 성공적으로 수정되었습니다.', result));
+      res.status(Status.OK).json(new ResJSON(result));
     } catch (err) {
       next(err);
     }
@@ -45,8 +47,8 @@ const Lesson: {
 
   deleteLesson: async (req, res, next) => {
     try {
-      await LessonService.deleteLesson(Number(req.params.id));
-      res.status(Status.OK).json(new ResJSON('레슨을 삭제했습니다.', {}));
+      await LessonService.deleteLesson(Number(req.params.id), req.user);
+      res.status(Status.NO_CONTENT);
     } catch (err) {
       next(err);
     }
@@ -55,10 +57,7 @@ const Lesson: {
   getLessonById: async (req, res, next) => {
     try {
       const result = LessonService.findActiveLesson(Number(req.params.id));
-      if (result)
-        res
-          .status(Status.OK)
-          .json(new ResJSON('레슨을 불러오는데 성곡했습니다.', result));
+      if (result) res.status(Status.OK).json(new ResJSON(result));
       else
         next(
           new ErrorResponse(
@@ -73,12 +72,17 @@ const Lesson: {
 
   getAllLessons: async (req, res, next) => {
     try {
+      if (!req.query.offset || !req.query.limit)
+        next(
+          new ErrorResponse(
+            Status.BAD_REQUEST,
+            'offset/limit 조건이 없습니다.',
+          ),
+        );
       const offset = Number(req.query.offset);
       const limit = Number(req.query.limit);
-      const result = LessonService.getAllActiveLessons(offset, limit);
-      res
-        .status(Status.OK)
-        .json(new ResJSON('레슨 리스트를 성공적으로 불러왔습니다.', result));
+      const result = await LessonService.getAllActiveLessons(offset, limit);
+      res.status(Status.OK).json(new ResJSON(result));
     } catch (err) {
       next(err);
     }
@@ -86,6 +90,13 @@ const Lesson: {
 
   getUserLessons: async (req, res, next) => {
     try {
+      if (!req.query.offset || !req.query.limit)
+        next(
+          new ErrorResponse(
+            Status.BAD_REQUEST,
+            'offset/limit 조건이 없습니다.',
+          ),
+        );
       const offset = Number(req.query.offset);
       const limit = Number(req.query.limit);
       const userId = Number(req.params.id);
@@ -94,11 +105,7 @@ const Lesson: {
         offset,
         limit,
       );
-      res
-        .status(Status.OK)
-        .json(
-          new ResJSON('유저 레슨 리스트를 성공적으로 불러왔습니다.', result),
-        );
+      res.status(Status.OK).json(new ResJSON(result));
     } catch (err) {
       next(err);
     }
