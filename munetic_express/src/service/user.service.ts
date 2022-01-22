@@ -76,6 +76,14 @@ const UserService = {
     return data;
   },
 
+  findUser: async (userId: number) => {
+    const data = await User.findByPk(userId, {
+      attributes: { exclude: ['login_password'] },
+      paranoid: false,
+    });
+    return data;
+  },
+
   findActiveUser: async (options: UserSearchOptions) => {
     const data = await User.findOne({
       where: { ...options },

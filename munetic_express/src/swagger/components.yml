@@ -100,15 +100,9 @@ definitions:
       deletedAt:
         type: string | null
       Category:
-        $ref: '#/definitions/LessonCategory'
+        $ref: '#/definitions/Category'
       User:
         $ref: '#/definitions/LessonUser'
-
-  LessonCategory:
-    type: object
-    properties:
-      name:
-        type: string
 
   LessonUser:
     type: object
@@ -151,3 +145,22 @@ definitions:
     properties:
       name:
         type: string
+
+  NewAdminUser:
+    type: object
+    required:
+      - 'email'
+      - 'login_password'
+      - 'name'
+      - 'type'
+    properties:
+      email:
+        type: string
+      login_password:
+        type: string
+      name:
+        type: string
+      type:
+        enum:
+          - Admin
+          - Owner

@@ -70,13 +70,6 @@ const User: {
 
   getUserProfile: async (req, res, next) => {
     try {
-      if (!req.params.id)
-        next(
-          new ErrorResponse(
-            Status.BAD_REQUEST,
-            '요청 정보에 유저 아이디가 없습니다.',
-          ),
-        );
       const id = Number(req.params.id);
       const user = await UserService.findActiveUser({ id });
       if (user) res.status(Status.OK).json(new ResJSON(user));

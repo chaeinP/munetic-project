@@ -7,15 +7,15 @@ import ErrorResponse from '../../utils/ErrorResponse';
 import UserService from '../../service/user.service';
 
 const AdminUser: {
-  createUser: RequestHandler;
+  createAdminUser: RequestHandler;
   getAppUsers: RequestHandler;
   getAdminUsers: RequestHandler;
   getUserProfile: RequestHandler;
-  getUsersByOptions: RequestHandler;
+  whetherUserExists: RequestHandler;
   deleteUser: RequestHandler;
   updateUser: RequestHandler;
 } = {
-  createUser: async (req, res, next) => {
+  createAdminUser: async (req, res, next) => {
     try {
       if (req.user?.type === 'Owner') {
         const adminInfo = Reshape.adminObject(req);
@@ -23,7 +23,7 @@ const AdminUser: {
         res.status(Status.CREATED).json(new ResJSON(data));
       } else {
         throw new ErrorResponse(
-          Status.UNAUTHORIZED,
+          Status.FORBIDDEN,
           '권한이 없습니다. 관리자에게 문의해주세요.',
         );
       }
@@ -34,6 +34,13 @@ const AdminUser: {
 
   getAppUsers: async (req, res, next) => {
     try {
+      if (!req.query.offset || !req.query.limit)
+        next(
+          new ErrorResponse(
+            Status.BAD_REQUEST,
+            'offset/limit 조건이 없습니다.',
+          ),
+        );
       const offset = Number(req.query.offset);
       const limit = Number(req.query.limit);
       const users = await UserService.getAllAppUsers(offset, limit);
@@ -45,6 +52,13 @@ const AdminUser: {
 
   getAdminUsers: async (req, res, next) => {
     try {
+      if (!req.query.offset || !req.query.limit)
+        next(
+          new ErrorResponse(
+            Status.BAD_REQUEST,
+            'offset/limit 조건이 없습니다.',
+          ),
+        );
       if (req.user?.type === 'Owner') {
         const offset = Number(req.query.offset);
         const limit = Number(req.query.limit);
@@ -53,7 +67,7 @@ const AdminUser: {
       } else
         next(
           new ErrorResponse(
-            Status.UNAUTHORIZED,
+            Status.FORBIDDEN,
             '권한이 없습니다. 관리자에게 문의해주세요.',
           ),
         );
@@ -65,25 +79,43 @@ const AdminUser: {
   getUserProfile: async (req, res, next) => {
     try {
       if (!req.params.id) {
-        res.status(Status.BAD_REQUEST).send('유저 아이디가 없습니다.');
+        res
+          .status(Status.BAD_REQUEST)
+          .send('요청 정보에 유저 아이디가 없습니다.');
       }
       const id = parseInt(req.params.id, 10);
-      const user = await UserService.findUserList({ id });
+      const user = await UserService.findUser(id);
       if (user) res.status(Status.OK).json(new ResJSON(user));
+      else
+        next(
+          new ErrorResponse(
+            Status.NOT_FOUND,
+            '요청 정보에 해당하는 유저를 찾을 수 없습니다.',
+          ),
+        );
     } catch (err) {
       next(err);
     }
   },
 
-  getUsersByOptions: async (req, res, next) => {
+  whetherUserExists: async (req, res, next) => {
     try {
+      if (Object.keys(req.query).length === 0)
+        next(
+          new ErrorResponse(
+            Status.BAD_REQUEST,
+            '요청 정보에 유저 검색 조건이 존재하지 않습니다.',
+          ),
+        );
       const userList = await UserService.findUserList(req.query);
       if (userList.length) {
-        res.status(Status.OK).json(new ResJSON(userList));
+        res
+          .status(Status.OK)
+          .json('검색 조건에 해당하는 유저 정보가 존재합니다.');
       } else
         throw new ErrorResponse(
-          Status.BAD_REQUEST,
-          '해당하는 유저 정보가 없습니다.',
+          Status.NOT_FOUND,
+          '검색 조건에 해당하는 유저 정보가 없습니다.',
         );
     } catch (err) {
       next(err);
@@ -92,9 +124,14 @@ const AdminUser: {
 
   deleteUser: async (req, res, next) => {
     try {
-      const userId = parseInt(req.params.id, 10);
+      if (!req.params.id) {
+        res
+          .status(Status.BAD_REQUEST)
+          .send('요청 정보에 유저 아이디가 없습니다.');
+      }
+      const userId = Number(req.params.id);
       const result = await UserService.deleteUser(userId);
-      if (result) res.status(Status.OK).json(new ResJSON({}));
+      if (result) res.status(Status.OK).json(result);
     } catch (err) {
       next(err);
     }
@@ -102,7 +139,12 @@ const AdminUser: {
 
   updateUser: async (req, res, next) => {
     try {
-      const userId = parseInt(req.params.id, 10);
+      if (!req.params.id) {
+        res
+          .status(Status.BAD_REQUEST)
+          .send('요청 정보에 유저 아이디가 없습니다.');
+      }
+      const userId = Number(req.params.id);
       const user = await UserService.updateUser(userId, req.body);
       if (user) res.status(Status.OK).json(new ResJSON(user));
     } catch (err) {

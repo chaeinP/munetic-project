@@ -63,7 +63,7 @@ paths:
       tags:
         - Users
       summary: Check if user who fits in conditions exists
-      description: 'query 조건에 해당하는 사용자가 존재하는지 여부를 반환합니다.'
+      description: '조건에 해당하는 사용자가 존재하는지 여부를 반환합니다.'
       consumes:
         - application/json
       produces:
@@ -193,11 +193,6 @@ paths:
               message:
                 type: string
                 example: 'request success'
-        '400':
-          description: Bad Request
-          schema:
-            type: string
-            example: '요청 정보에 유저 아이디가 없습니다.'
         '404':
           description: Not found
           schema:

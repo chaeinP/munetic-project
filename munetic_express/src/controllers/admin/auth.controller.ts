@@ -13,7 +13,6 @@ const AdminAuth: {
   login: RequestHandler;
   logout: RequestHandler;
   refresh: RequestHandler;
-  updatePassword: RequestHandler;
 } = {
   login: async (req, res, next) => {
     try {
@@ -43,17 +42,6 @@ const AdminAuth: {
     try {
       const accessToken = await Jwt.accessToken(req.user);
       res.status(Status.OK).json(new ResJSON(accessToken));
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  updatePassword: async (req, res, next) => {
-    try {
-      let { login_password } = req.body;
-      login_password = bcrypt.hashSync(login_password, 10);
-      await UserService.updateUser(req.user!.id, { login_password });
-      res.status(Status.OK).json(new ResJSON({}));
     } catch (err) {
       next(err);
     }

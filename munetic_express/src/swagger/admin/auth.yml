@@ -4,7 +4,6 @@ paths:
       tags:
         - Admin Auth
       summary: Admin Login
-      description: 응답 body에는 accessToken을 cookie에는 refreshToken을 전달합니다.
       consumes:
         - application/json
       produces:
@@ -14,7 +13,7 @@ paths:
           name: body
           required: true
           schema:
-            $ref: '../components.yml#/definitions/Login'
+            $ref: '#definitions/Login'
       responses:
         '200':
           description: 'Login success'
@@ -40,25 +39,14 @@ paths:
     get:
       tags:
         - Admin Auth
-      summary: Admin Logout
+      summary: Logout
       produces:
         - application/json
       parameters:
-        - in: header
-          name: accessToken
-          type: string
-          required: true
+        - $ref: '#definitions/AccessToken'
       responses:
-        '200':
-          description: logout success
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: 'logout complete'
-              data:
-                type: object
+        '204':
+          description: 'No Content'
         '401':
           description: 'Unauthorized'
           schema:
@@ -71,22 +59,24 @@ paths:
         - Admin Auth
       summary: Refresh accessToken
       parameters:
-        - in: header
-          type: string
-          name: refreshToken(cookie)
+        - $ref: '#definitions/RefreshToken'
       responses:
         '200':
-          description: 'Login success'
+          description: 'Refresh AccessToken succesfully'
           schema:
             type: object
             properties:
+              data:
+                type: string
+                example: accessToken
               message:
                 type: string
                 example: 'request success'
-              data:
-                type: string
         '401':
           description: 'Unauthorized'
           schema:
             type: string
             example: 'Unauthorized'
+
+definitions:
+  $ref: '../components.yml'
