@@ -1,0 +1,234 @@
+paths:
+  /users/:
+    post:
+      tags:
+        - Users
+      summary: Signup User
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            properties:
+              login_id:
+                type: string
+              login_password:
+                type: string
+              type:
+                type: string
+                enum:
+                  - Student
+                  - Tutor
+              birth:
+                type: string
+              gender:
+                type: string
+                enum:
+                  - Male
+                  - Female
+                  - Other
+              name:
+                type: string
+              nickname:
+                type: string
+              email:
+                type: string
+              phone_number:
+                type: string
+
+      responses:
+        '201':
+          description: Created User
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+                example: 'request success'
+
+        '500':
+          description: Internal Server Error
+          schema:
+            type: string
+            example: '서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
+
+  /users/exists?:
+    get:
+      tags:
+        - Users
+      summary: Check if user who fits in conditions exists
+      description: '조건에 해당하는 사용자가 존재하는지 여부를 반환합니다.'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          type: string
+          name: login_id
+        - in: query
+          type: string
+          name: nickname
+        - in: query
+          type: string
+          name: email
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: '검색 조건에 해당하는 유저 정보가 있습니다.'
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 검색 조건이 존재하지 않습니다.'
+        '404':
+          description: Not_Found
+          schema:
+          type: string
+          example: '검색 조건에 해당하는 유저 정보가 없습니다.'
+
+  /users/profile:
+    get:
+      tags:
+        - Users
+      summary: Get My profile
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/AccessToken'
+      responses:
+        '200':
+          description: Succesfully got My profile
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+            example: 'Unauthorized'
+
+    patch:
+      tags:
+        - Users
+      summary: Edit My profile
+      parameters:
+        - $ref: '#definitions/AccessToken'
+        - name: body
+          in: body
+          description: Edit contents
+          schema:
+            type: object
+            properties:
+              type:
+                enum: ['Student', 'Tutor']
+              nickname:
+                type: string
+              name_public:
+                type: boolean
+              phone_public:
+                type: boolean
+              image_url:
+                type: string
+              introduction:
+                type: string
+      responses:
+        '200':
+          description: SUCCESS
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'request success'
+              data:
+                $ref: '#definitions/User'
+        '401':
+          description: Unauthorized
+          schema:
+            type: string
+            example: 'Unauthorized'
+
+  /users/profile/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user profile by ID
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: 'id'
+          type: number
+          in: path
+          required: true
+          description: user id
+      responses:
+        '200':
+          description: Succesfully got User profile
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '404':
+          description: Not found
+          schema:
+            type: string
+            example: '요청 정보에 해당하는 유저를 찾을 수 없습니다.'
+
+  /users/image:
+    post:
+      tags:
+        - Users
+      summary: Create profile image
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        $ref: '#definitions/AccessToken'
+      responses:
+        '200':
+          description: Successfully created image
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'request success'
+              data:
+                type: string
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'Failed'
+
+definitions:
+  $ref: '../components.yml'

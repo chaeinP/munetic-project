@@ -1,0 +1,29 @@
+paths:
+  /category:
+    get:
+      tags:
+        - Category
+      summary: Get Category Lists
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successfully got category Lists
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'request success'
+              data:
+                $ref: '#definitions/Category'
+        '404':
+          description: 'Not Found'
+          schema:
+            type: string
+            example: '카테고리가 없습니다.'
+
+definitions:
+  $ref: '../components.yml'

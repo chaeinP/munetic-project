@@ -1,13 +1,13 @@
 import express from 'express';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { options } from './swagger';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import { options } from './swagger/swagger';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { router } from './routes';
 import { createCategories, createFirstOwnerAccount, Models } from './models';
 import errorHandler from './utils/errorHandler';
-import passport from 'passport';
 
 const app: express.Application = express();
 
@@ -28,7 +28,7 @@ app.use('/api', router);
  */
 const specs = swaggerJSDoc(options);
 app.use(
-  '/swagger',
+  '/api/swagger',
   swaggerUi.serve,
   swaggerUi.setup(specs, { explorer: true }),
 );

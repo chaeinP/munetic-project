@@ -1,0 +1,82 @@
+paths:
+  /admin/auth/login:
+    post:
+      tags:
+        - Admin Auth
+      summary: Admin Login
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#definitions/Login'
+      responses:
+        '200':
+          description: 'Login success'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'request success'
+              data:
+                type: string
+          headers:
+            cookie:
+              description: JWT refreshToken
+              type: string
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: 입력하신 id에 해당하는 계정이 없습니다. or 잘못된 비밀번호 입니다.
+
+  /admin/auth/logout:
+    get:
+      tags:
+        - Admin Auth
+      summary: Logout
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/AccessToken'
+      responses:
+        '204':
+          description: 'No Content'
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: Unauthorized
+
+  /admin/auth/refresh:
+    get:
+      tags:
+        - Admin Auth
+      summary: Refresh accessToken
+      parameters:
+        - $ref: '#definitions/RefreshToken'
+      responses:
+        '200':
+          description: 'Refresh AccessToken succesfully'
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+                example: accessToken
+              message:
+                type: string
+                example: 'request success'
+        '401':
+          description: 'Unauthorized'
+          schema:
+            type: string
+            example: 'Unauthorized'
+
+definitions:
+  $ref: '../components.yml'

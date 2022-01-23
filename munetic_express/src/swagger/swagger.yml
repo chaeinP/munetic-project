@@ -1,0 +1,17 @@
+swagger: '2.0'
+info:
+  title: API Title
+  version: '1.0'
+tags:
+  - name: Auth
+    description: Authentication & Authorization
+  - name: Users
+    description: App User Information
+  - name: Lessons
+    description: Lesson Information
+  - name: Category
+    description: Category Lists
+  - name: Admin Auth
+    description: Admin Authentication & Authorization
+  - name: Admin Users
+    description: All User Information

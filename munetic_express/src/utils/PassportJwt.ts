@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import { Op } from 'sequelize';
-import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
-import UserService from '../service/user.service';
 import passport from 'passport';
+import { ExtractJwt, Strategy, StrategyOptions } from 'passport-jwt';
+
+import UserService from '../service/user.service';
 import { development } from '../config/config';
 
 const { access_secret, refresh_secret } = development;

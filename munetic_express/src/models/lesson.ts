@@ -6,7 +6,7 @@ export interface lessonAttributes {
   category_id: number;
   title: string;
   price: number | null;
-  location: string | null;
+  location: string;
   minute_per_lesson: number | null;
   content: string;
   createdAt: Date;

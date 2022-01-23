@@ -1,0 +1,166 @@
+definitions:
+  Login:
+    type: object
+    required:
+      - 'login_id'
+      - 'login_password'
+    properties:
+      login_id:
+        type: string
+      login_password:
+        type: string
+
+  User:
+    type: object
+    properties:
+      login_id:
+        type: string
+      type:
+        enum:
+          - 'Student'
+          - 'Tutor'
+      name:
+        type: string
+      name_public:
+        type: boolean
+        example: false
+      birth:
+        type: string
+      gender:
+        type: string
+        enum:
+          - Male
+          - Female
+          - Other
+      nickname:
+        type: string
+      email:
+        type: string
+      phone_number:
+        type: string
+      phone_public:
+        type: boolean
+        example: false
+      image_url:
+        type: string
+      introduction:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      deletedAt:
+        type: string
+
+  AccessToken:
+    in: header
+    name: Authorization
+    type: string
+    example: Bearer accessToken
+
+  RefreshToken:
+    in: cookie
+    type: string
+    name: refreshToken
+
+  LessonLists:
+    type: object
+    required:
+      - count
+      - rows
+    properties:
+      count:
+        type: integer
+      rows:
+        type: array
+        items:
+          $ref: '#/definitions/Lesson'
+
+  Lesson:
+    type: object
+    properties:
+      id:
+        type: number
+      tutor_id:
+        type: number
+      title:
+        type: string
+      price:
+        type: number
+      location:
+        type: string
+      minute_per_lesson:
+        type: number
+      content:
+        type: string
+      createdAt:
+        type: string
+      updatedAt:
+        type: string
+      deletedAt:
+        type: string | null
+      Category:
+        $ref: '#/definitions/Category'
+      User:
+        $ref: '#/definitions/LessonUser'
+
+  LessonUser:
+    type: object
+    properties:
+      id:
+        type: number
+      login_id:
+        type: string
+      name:
+        type: string
+      nickname:
+        type: string
+      image_url:
+        type: string
+
+  LessonEditable:
+    type: object
+    properties:
+      category:
+        type: string
+        required: true
+      title:
+        type: string
+        required: true
+      price:
+        type: number
+      location:
+        type: string
+        required: true
+      minute_per_lesson:
+        type: number
+        required: true
+      content:
+        type: string
+
+  Category:
+    type: object
+    required:
+      - 'name'
+    properties:
+      name:
+        type: string
+
+  NewAdminUser:
+    type: object
+    required:
+      - 'email'
+      - 'login_password'
+      - 'name'
+      - 'type'
+    properties:
+      email:
+        type: string
+      login_password:
+        type: string
+      name:
+        type: string
+      type:
+        enum:
+          - Admin
+          - Owner

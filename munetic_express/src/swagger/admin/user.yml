@@ -1,0 +1,270 @@
+paths:
+  /admin/users/app?:
+    get:
+      tags:
+        - Admin Users
+      summary: Get All app user profile
+      description: only owner account can access the request
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - in: query
+          type: number
+          name: offset
+          required: true
+        - in: query
+          type: number
+          name: limit
+          requires: true
+      responses:
+        '200':
+          description: Succesfully got All admin profile
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+            example: 'offset/limit 조건이 없습니다.'
+
+  /admin/users/admin?:
+    get:
+      tags:
+        - Admin Users
+      summary: Get All admin user profile
+      description: only owner account can access the request
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - in: query
+          type: number
+          name: offset
+          required: true
+        - in: query
+          type: number
+          name: limit
+          requires: true
+      responses:
+        '200':
+          description: Succesfully got All admin profile
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  rows:
+                    type: array
+                    items:
+                      $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+            example: 'offset/limit 조건이 없습니다.'
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+            example: '권한이 없습니다. 관리자에게 문의하세요.'
+
+  /admin/users/admin:
+    post:
+      tags:
+        - Admin Users
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/NewAdminUser'
+      responses:
+        '201':
+          description: Created Admin User
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+              message:
+                type: string
+                example: 'request success'
+        '403':
+          description: Forbidden
+          schema:
+            type: string
+            example: '권한이 없습니다. 관리자에게 문의하세요.'
+
+  /admin/users/{id}:
+    get:
+      tags:
+        - Admin Users
+      summary: get specific user information by user account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - in: path
+          description: user id
+          required: true
+          type: number
+          name: id
+      responses:
+        '200':
+          description: Succesfully got User profile
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 아이디가 없습니다.'
+        '404':
+          description: Not found
+          schema:
+            type: string
+            example: '요청 정보에 해당하는 유저를 찾을 수 없습니다.'
+
+    patch:
+      tags:
+        - Admin Users
+      summary: update user information by user account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - in: path
+          required: true
+          type: number
+          name: id
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              type:
+                enum:
+                  - Student
+                  - Tutor
+      responses:
+        '200':
+          description: successfully updated user type
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 아이디가 없습니다.'
+
+    delete:
+      tags:
+        - Admin Users
+      summary: soft delete user by admin account
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/accessToken'
+        - in: path
+          required: true
+          type: number
+          name: id
+      responses:
+        '200':
+          description: 'OK'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'request success'
+              data:
+                type: object
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 아이디가 없습니다.'
+
+  /admin/users/exists?:
+    get:
+      tags:
+        - Admin Users
+      summary: Check if user who fits in conditions exists
+      description: '조건에 해당하는 사용자가 존재하는지 여부를 반환합니다.'
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          type: string
+          name: login_id
+        - in: query
+          type: string
+          name: nickname
+        - in: query
+          type: string
+          name: email
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: '검색 조건에 해당하는 유저 정보가 있습니다.'
+        '400':
+          description: Bad_Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 검색 조건이 존재하지 않습니다.'
+        '404':
+          description: Not_Found
+          schema:
+          type: string
+          example: '검색 조건에 해당하는 유저 정보가 없습니다.'
+
+definitions:
+  $ref: '../components.yml'

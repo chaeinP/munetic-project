@@ -1,8 +1,9 @@
 export interface ResponseData {}
 
 export default class ResJSON {
-  constructor(
-    public readonly message: string,
-    public readonly data: ResponseData = {},
-  ) {}
+  public readonly message: string;
+
+  constructor(public readonly data: ResponseData = {}) {
+    this.message = 'request success';
+  }
 }

@@ -1,4 +1,5 @@
 import { Model, Optional, Sequelize, DataTypes } from 'sequelize';
+import bcrypt from 'bcrypt';
 
 export enum Account {
   Student = 'Student',
@@ -59,8 +60,8 @@ export default class User
 {
   public id!: number;
   public type!: Account;
-  public login_id!: string | null;
-  public login_password!: string | null;
+  public login_id!: string;
+  public login_password!: string;
   public nickname!: string;
   public name!: string;
   public name_public!: boolean;
@@ -96,6 +97,9 @@ export default class User
         login_password: {
           allowNull: true,
           type: DataTypes.STRING(60),
+          set(value: string) {
+            this.setDataValue('login_password', bcrypt.hashSync(value, 10));
+          },
         },
         nickname: {
           allowNull: false,

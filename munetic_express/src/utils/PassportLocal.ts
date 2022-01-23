@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
-
 import bcrypt from 'bcrypt';
 import passportLocal from 'passport-local';
+
 import UserService from '../service/user.service';
 
 const Strategy = passportLocal.Strategy;
