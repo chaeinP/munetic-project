@@ -59,8 +59,8 @@ services: # 사용되는 서비스들입니다.
     environment:
       - DB_HOST=munetic_database
       - DB_PORT=3306
-      - DB_USERNAME=${EXPRESS_USER}
-      - DB_PASSWORD=${EXPRESS_PASSWORD}
+      - DB_USERNAME=${MARIADB_USER}
+      - DB_PASSWORD=${MARIADB_PASSWORD}
       - DB_NAME=munetic
       - ACCESS_SECRET=${ACCESS_SECRET}
       - REFRESH_SECRET=${REFRESH_SECRET}
