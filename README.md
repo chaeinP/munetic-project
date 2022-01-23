@@ -1,11 +1,10 @@
-> 이 repository는 2021-12 ~ 2022-01 까지 약 한달한 munetic 프로젝트 첫번째 팀으로 참여했을 당시 작성했던 코드를 개인적으로 리팩토링하며 회고하는 repository입니다.
+> ❗️ 이 repository는 2021-12 ~ 2022-01 까지 약 한달간 munetic 프로젝트 첫번째 팀으로 참여했을 당시 작성했던 코드를 개인적으로 리팩토링하며 회고하는 repository입니다.
 
 # slabs-munetic
+[원본 프로젝트 repository](https://github.com/innovationacademy-kr/slabs-munetic)
 
 42-기업 협력 프로젝트.
 Munetic, 음악 레슨 매칭앱의 MVP(Minimum Viable Product)를 3 명씩 구성 된 총 3 개의 개발 팀이 릴레이 방식으로 개발하는 프로젝트입니다.
-
-[원본 프로젝트 repository](https://github.com/innovationacademy-kr/slabs-munetic)
 
 ## 폴더 구조
 
@@ -45,8 +44,6 @@ Munetic, 음악 레슨 매칭앱의 MVP(Minimum Viable Product)를 3 명씩 구�
    REFRESH_SECRET= # JWT_REFRESH_SECRET_KEY
    SERVER_HOST= # (ex.localhost)
    ```
-
-`````
 
 2. Docker로 mariadb 띄우기
 
@@ -119,4 +116,4 @@ ex) localhost:3030/api/swagger
 
 - [x] 관심사별 객체로 묶어 재사용성 높이기
 - [x] Rest API 디자인 가이드에 맞춰 API 개선
-- [ ] text coverage 높이기
+- [ ] test coverage 높이기
