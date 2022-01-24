@@ -1,58 +1,74 @@
-import User from '../../models/user';
-import UserInstance from '../dummy/userInstance';
-import * as UserService from '../../service/user.service';
-import { kunlee, userProfileInstance } from '../dummy/userProfileInstance';
+import { userCreationAttributes } from './../../models/user';
+import User, { Gender, Account } from '../../models/user';
+import UserService, {
+  NewUserInfo,
+  UserSearchOptions,
+} from '../../service/user.service';
+import userInstance from '../dummy/userInstance';
 
 jest.mock('../../models/user');
-const userFindAll = jest.spyOn(User, 'findAll');
 
-describe('유저 검색: UserService.search unit test', () => {
-  const userInfo = {
-    login_id: 'pca0046',
-  };
+// describe('유저 생성:UserService.createUser unit test', () => {
+//   const newUserInfo = {
+//     login_id: 'testId',
+//     login_password: '1234',
+//     name: '박코딩',
+//     birth: new Date('1995-11-05'),
+//     gender: Gender['Other'],
+//     nickname: 'godcoding',
+//     type: Account['Student'],
+//     email: 'testId@test.com',
+//     phone_number: '010-000-0000',
+//   } as NewUserInfo;
 
-  it('인자로 들어온 조건에 대해 findAll 함수로 조회한다.', async () => {
-    await UserService.search(userInfo);
-    expect(User.findAll).toBeCalled();
+//   it('save 함수를 호출해 새 정보를 저장한다.', async () => {
+//     const newUser = new User(newUserInfo);
+//     const newUserSave = jest.spyOn(newUser, 'save');
+//     await UserService.createUser(newUserInfo);
+//     expect(newUserSave).toBeCalled();
+//   });
+//   it('성공적으로 저장되면 password가 제외된 유저 객체를 리턴한다.', async () => {
+//     const newUser = new User(newUserInfo);
+//     const newUserSave = jest.spyOn(newUser, 'save');
+//     newUserSave.mockResolvedValue(new User(newUserInfo));
+//     const result = await UserService.createUser(newUserInfo);
+//     expect(result.login_id).toBe('testId');
+//   });
+// });
+
+describe('findUserList: 전체 유저(삭제 유저 포함)에서 특정 조건에 해당하는 유저 리스트를 반환하는 함수', () => {
+  const options = { name: '쿠운리' } as UserSearchOptions;
+  const userFindAllSpy = jest.spyOn(User, 'findAll');
+  it('findAll 함수 호출', async () => {
+    await UserService.findUserList(options);
+    expect(userFindAllSpy).toBeCalledWith({
+      where: { ...options },
+      attributes: { exclude: ['login_password'] },
+      paranoid: false,
+    });
   });
-  it('findAll 함수로 조회된 리스트를 리턴한다.', () => {
-    userFindAll.mockResolvedValueOnce([UserInstance]);
-    UserService.search(userInfo).then(data =>
-      expect(data).toStrictEqual([UserInstance]),
-    );
+  it('findAll 함수 결과값 리턴', async () => {
+    const data = [userInstance.kunlee];
+    userFindAllSpy.mockResolvedValue(data);
+    const result = await UserService.findUserList(options);
+    expect(result).toStrictEqual(data);
   });
 });
 
-const userFindAndCountAll = jest.spyOn(User, 'findAndCountAll');
-
-describe('전체 유저 프로필 검색: UserService.findAllUser unit test', () => {
-  const page = 0;
-  it('전체 유저 get 요청이 들어오면 findAndCountAll 함수가 실행된다.', async () => {
-    await UserService.findAllUser(page);
-    expect(User.findAndCountAll).toBeCalled();
+describe('findUser: 전체 유저(삭제 유저 포함)에서 유저 id로 유저를 조회하는 함수', () => {
+  const userFindByPk = jest.spyOn(User, 'findByPk');
+  const userId = 1;
+  it('findByPk 함수 호출', async () => {
+    await UserService.findUser(userId);
+    expect(userFindByPk).toBeCalledWith(userId, {
+      attributes: { exclude: ['login_password'] },
+      paranoid: false,
+    });
   });
-  it('findAndCountAll 함수로 조회된 리스트를 리턴한다.', () => {
-    const resValue = { count: [3], rows: userProfileInstance };
-    userFindAndCountAll.mockResolvedValueOnce(resValue);
-    UserService.findAllUser(page).then(data =>
-      expect(data).toStrictEqual(resValue),
-    );
-  });
-});
 
-const userFindOne = jest.spyOn(User, 'findOne');
-
-describe('유저 프로필 id로 검색: UserService.findUserById unit test', () => {
-  const id = 1;
-
-  it('유저 get 요청이 id와 함께 들어오면 findOne 함수가 실행된다.', async () => {
-    await UserService.findUserById(id);
-    expect(User.findOne).toBeCalled();
-  });
-  it('findOne 함수로 조회된 유저 정보를 리턴한다.', () => {
-    userFindOne.mockResolvedValueOnce(kunlee);
-    UserService.findUserById(id).then(data =>
-      expect(data).toStrictEqual(kunlee),
-    );
+  it('findByPk 함수 결과 값 리턴', async () => {
+    userFindByPk.mockResolvedValue(userInstance.kunlee);
+    const result = await UserService.findUser(userId);
+    expect(result).toStrictEqual(userInstance.kunlee);
   });
 });
