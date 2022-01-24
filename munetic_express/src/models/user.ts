@@ -17,8 +17,8 @@ export enum Gender {
 export interface userAttributes {
   id: number;
   type: Account;
-  login_id: string | null;
-  login_password: string | null;
+  login_id: string;
+  login_password: string;
   nickname: string;
   name: string;
   name_public: boolean;
@@ -90,12 +90,12 @@ export default class User
           type: DataTypes.ENUM('Student', 'Tutor', 'Owner', 'Admin'),
         },
         login_id: {
-          allowNull: true,
+          allowNull: false,
           type: DataTypes.STRING(30),
           unique: true,
         },
         login_password: {
-          allowNull: true,
+          allowNull: false,
           type: DataTypes.STRING(60),
           set(value: string) {
             this.setDataValue('login_password', bcrypt.hashSync(value, 10));

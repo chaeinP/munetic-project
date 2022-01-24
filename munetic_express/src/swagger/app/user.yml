@@ -82,11 +82,8 @@ paths:
         '200':
           description: OK
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: '검색 조건에 해당하는 유저 정보가 있습니다.'
+            type: string
+            example: '검색 조건에 해당하는 유저 정보가 존재합니다.'
         '400':
           description: Bad_Request
           schema:
@@ -95,8 +92,8 @@ paths:
         '404':
           description: Not_Found
           schema:
-          type: string
-          example: '검색 조건에 해당하는 유저 정보가 없습니다.'
+            type: string
+            example: '검색 조건에 해당하는 유저 정보가 없습니다.'
 
   /users/profile:
     get:

@@ -4,7 +4,7 @@ import * as Status from 'http-status';
 import User, { Account, Gender, userCreationAttributes } from '../models/user';
 import ErrorResponse from '../utils/ErrorResponse';
 
-interface UserSearchOptions {
+export interface UserSearchOptions {
   id?: number;
   login_id?: string;
   nickname?: string;
@@ -13,7 +13,7 @@ interface UserSearchOptions {
   type?: object;
 }
 
-interface NewUserInfo {
+export interface NewUserInfo {
   login_id: string;
   login_password: string;
   name: string;
@@ -32,16 +32,15 @@ interface NewProfileInfo {
   phone_public?: boolean;
   image_url?: string | null;
   introduction?: string | null;
-  login_password?: string | null;
+  login_password?: string;
 }
 
 const UserService = {
   createUser: async (userInfo: NewUserInfo) => {
     const newUser = new User(userInfo);
-    return await newUser.save().then((data: userCreationAttributes) => {
-      delete data.login_password;
-      return data;
-    });
+    const data = (await newUser.save()).toJSON() as userCreationAttributes;
+    delete data.login_password;
+    return data;
   },
 
   deleteUser: async (id: number) => {
