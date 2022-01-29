@@ -11,8 +11,4 @@ export const development = {
   access_secret: process.env.ACCESS_SECRET,
   refresh_secret: process.env.REFRESH_SECRET,
   domain: process.env.SERVER_HOST,
-  // test: {},
-  // production: {},
 };
-
-// module.exports = { development };
