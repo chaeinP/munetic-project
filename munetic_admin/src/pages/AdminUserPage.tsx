@@ -33,7 +33,8 @@ export default function AdminUserPage() {
   };
 
   useEffect(() => {
-    Api.getAdminUserList(page)
+    const offset = page * rowsPerPage;
+    Api.getAdminUserList(offset, rowsPerPage)
       .then(({ data }: any) => {
         setRows(data.data.rows);
         setCount(parseInt(data.data.count, 10));

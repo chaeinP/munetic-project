@@ -3,9 +3,9 @@ import { TableCell } from '@mui/material';
 export default function LessonTableCell({ row }: any) {
   return (
     <>
-      <TableCell sx={{ fontSize: '1.25rem' }}>{row['User.login_id']}</TableCell>
+      <TableCell sx={{ fontSize: '1.25rem' }}>{row.tutor_id}</TableCell>
       <TableCell align="left" sx={{ fontSize: '1.25rem' }}>
-        {row['Category.name']}
+        {row.Category.name}
       </TableCell>
       <TableCell align="left" sx={{ fontSize: '1.25rem' }}>
         {row.title}

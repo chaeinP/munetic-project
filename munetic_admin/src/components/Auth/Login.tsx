@@ -4,12 +4,14 @@ import { useLoginUpdate } from '../../contexts/login';
 import Button from '../Button';
 import * as Api from '../../lib/api';
 import { instance } from '../../lib/api';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const setLogin = useLoginUpdate();
+  const navigate = useNavigate();
 
   const loginHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     Api.login({ login_id: email, login_password: password })
@@ -18,6 +20,7 @@ export default function Login() {
           'Authorization'
         ] = `Bearer ${res.data.data}`;
         localStorage.setItem('user', JSON.stringify(email));
+        navigate('/');
         if (setLogin) setLogin(true);
       })
       .catch(err => {

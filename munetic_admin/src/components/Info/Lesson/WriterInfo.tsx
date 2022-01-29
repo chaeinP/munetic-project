@@ -15,9 +15,9 @@ export default function WriterInfo() {
   return (
     <>
       <Title>작성자</Title>
-      <UserImage url={info['User.image_url']} />
-      <UserNickname>{info['User.nickname']}</UserNickname>
-      <UserId>{info['User.login_id']}</UserId>
+      <UserImage url={info.User.image_url} />
+      <UserNickname>{info.User.nickname}</UserNickname>
+      <UserId>{info.User.login_id}</UserId>
       <CustomButton onClick={MoveToUserProfile}>유저 프로필 보기</CustomButton>
     </>
   );

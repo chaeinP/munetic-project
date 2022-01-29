@@ -1,7 +1,7 @@
 export interface LessonData {
   id: number;
-  'User.login_id': string;
-  'Category.name': string;
+  user_id: string;
+  category: string;
   title: string;
   location: string;
   createdAt: string;
@@ -23,13 +23,13 @@ export const lessonHeadCells: readonly LessonHeadCell[] = [
     label: 'No.',
   },
   {
-    id: 'User.login_id',
+    id: 'user_id',
     numeric: false,
     disablePadding: false,
     label: '아이디',
   },
   {
-    id: 'Category.name',
+    id: 'category',
     numeric: false,
     disablePadding: false,
     label: '카테고리',

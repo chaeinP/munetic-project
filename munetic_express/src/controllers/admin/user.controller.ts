@@ -14,6 +14,7 @@ const AdminUser: {
   whetherUserExists: RequestHandler;
   deleteUser: RequestHandler;
   updateUser: RequestHandler;
+  updateMyProfile: RequestHandler;
 } = {
   createAdminUser: async (req, res, next) => {
     try {
@@ -151,6 +152,17 @@ const AdminUser: {
       next(err);
     }
   },
+
+  updateMyProfile: async (req, res, next) => {
+    try {
+      // console.log('hihi');
+      const userId = req.user?.id;
+      const user = await UserService.updateUser(userId!, req.body);
+      if (user) res.status(Status.OK).json(new ResJSON(user));
+    } catch (err) {
+      next(err);
+    }
+  }
 };
 
 export default AdminUser;

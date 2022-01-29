@@ -10,7 +10,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - in: query
           type: number
           name: offset
@@ -54,7 +54,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - in: query
           type: number
           name: offset
@@ -96,9 +96,11 @@ paths:
     post:
       tags:
         - Admin Users
+      summary: Create new admin account
       produces:
         - application/json
       parameters:
+        - $ref: '#definitions/AccessToken'
         - $ref: '#definitions/NewAdminUser'
       responses:
         '201':
@@ -117,6 +119,40 @@ paths:
             type: string
             example: '권한이 없습니다. 관리자에게 문의하세요.'
 
+  /admin/users/profile:
+    patch:
+      tags:
+        - Admin Users
+      summary: update my admin profile
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#definitions/AccessToken'
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              login_password:
+              type: string
+      responses:
+        '200':
+          description: successfully updated user type
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#definitions/User'
+              message:
+                type: string
+                example: 'request success'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+            example: '요청 정보에 유저 아이디가 없습니다.'
+
+
   /admin/users/{id}:
     get:
       tags:
@@ -127,7 +163,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - in: path
           description: user id
           required: true
@@ -164,7 +200,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - in: path
           required: true
           type: number
@@ -204,7 +240,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - in: path
           required: true
           type: number

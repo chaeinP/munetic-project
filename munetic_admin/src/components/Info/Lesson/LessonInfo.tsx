@@ -17,7 +17,7 @@ export default function LessonInfo() {
       <TextFields>
         <TextField>
           <p>카테고리</p>
-          <div>{info['Category.name']}</div>
+          <div>{info.Category.name}</div>
         </TextField>
         <TextField_>
           <p>위치</p>

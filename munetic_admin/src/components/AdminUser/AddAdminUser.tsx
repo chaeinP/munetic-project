@@ -22,13 +22,16 @@ export function AddAdminUser() {
 
   const checkEmail = () => {
     Api.doubleCheck(`email=${email}`)
-      .then(() => {
-        setIsValid(true);
-        setButtonText('✅');
-      })
-      .catch(() => {
+      .then((data) => {
         setIsValid(false);
-        setButtonText('❌');
+        setButtonText('❌')
+        alert(data.data);
+      })
+      .catch((err) => {
+        if(err.response.status === 404){
+          setIsValid(true);
+          setButtonText('✅');
+        }
       });
   };
 

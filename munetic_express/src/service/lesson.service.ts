@@ -133,6 +133,7 @@ const LessonService = {
 
   findLessonsByUserId: async (id: number, offset: number, limit: number) => {
     const lessonLists = await Lesson.findAndCountAll({
+      where: { tutor_id: id },
       ...lessonQueryOptionsforAll,
       offset,
       limit,

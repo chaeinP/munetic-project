@@ -29,7 +29,8 @@ export default function UserListPage() {
   };
 
   useEffect(() => {
-    Api.getAppUserList(page).then(({ data }: any) => {
+    const offset = page * rowsPerPage
+    Api.getAppUserList(offset, rowsPerPage).then(({ data }: any) => {
       setRows(data.data.rows);
       setCount(parseInt(data.data.count, 10));
     });

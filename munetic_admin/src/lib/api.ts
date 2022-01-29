@@ -39,38 +39,38 @@ export const refresh = async () => {
 };
 
 export const doubleCheck = async (query: string) => {
-  return await instance.get(`user/check?${query}`);
+  return await instance.get(`users/exists?${query}`);
 };
 
 export const createUser = async (userInfo: createUserProps) => {
-  return await instance.post('auth/signup', userInfo);
+  return await instance.post('users/admin', userInfo);
 };
 
-export const getAppUserList = async (page: number) => {
-  return await instance.get(`user/app?page=${page + 1}`);
+export const getAppUserList = async (offset: number, limit:number) => {
+  return await instance.get(`users/app?offset=${offset}&limit=${limit}`);
 };
 
-export const getAdminUserList = async (page: number) => {
-  return await instance.get(`user/admin?page=${page + 1}`);
+export const getAdminUserList = async (offset: number, limit:number) => {
+  return await instance.get(`users/admin?offset=${offset}&limit=${limit}`);
 };
 
 export const getUserInfo = async (userId: number) => {
-  return await instance.get(`user/${userId}`);
+  return await instance.get(`users/${userId}`);
 };
 
 export const updateUserInfo = async (
   userId: number,
   userInfo: editUserProps,
 ) => {
-  return await instance.patch(`user/${userId}`, userInfo);
+  return await instance.patch(`users/${userId}`, userInfo);
 };
 
 export const deleteUser = async (userId: number) => {
-  return await instance.delete(`user/${userId}`);
+  return await instance.delete(`users/${userId}`);
 };
 
 export const getAllLessons = async (offset: number, limit: number) => {
-  return await instance.get(`lesson?offset=${offset}&limit=${limit}`);
+  return await instance.get(`lessons?offset=${offset}&limit=${limit}`);
 };
 
 export const getUserLessons = async (
@@ -79,19 +79,19 @@ export const getUserLessons = async (
   limit: number,
 ) => {
   return await instance.get(
-    `lesson/user/${userId}?offset=${offset}&limit=${limit}`,
+    `lessons/user/${userId}?offset=${offset}&limit=${limit}`,
   );
 };
 export const getLesson = async (lessonId: number) => {
-  return await instance.get(`lesson/${lessonId}`);
+  return await instance.get(`lessons/${lessonId}`);
 };
 export const deleteLesson = async (lessonId: number) => {
-  return await instance.delete(`lesson/${lessonId}`);
+  return await instance.delete(`lessons/${lessonId}`);
 };
 
 interface passwordProps {
   login_password: string;
 }
 export const updatePassword = async (newPassword: passwordProps) => {
-  return await instance.patch('auth/password', newPassword);
+  return await instance.patch('users/profile', newPassword);
 };

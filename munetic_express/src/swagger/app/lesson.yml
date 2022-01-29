@@ -42,7 +42,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - name: 'tutor_id'
           in: path
           type: number
@@ -120,7 +120,7 @@ paths:
         - Lessons
       summary: 'Update lesson'
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - name: 'id'
           in: path
           description: 'lesson id'
@@ -159,7 +159,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - $ref: '#definitions/accessToken'
+        - $ref: '#definitions/AccessToken'
         - name: 'id'
           in: path
           description: 'lesson id'
