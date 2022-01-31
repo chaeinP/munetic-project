@@ -1,6 +1,7 @@
 > ❗️ 이 repository는 2021-12 ~ 2022-01 까지 약 한달간 munetic 프로젝트 첫번째 팀으로 참여했을 당시 작성했던 코드를 개인적으로 리팩토링하며 회고하는 repository입니다.
 
 # slabs-munetic
+
 [원본 프로젝트 repository](https://github.com/innovationacademy-kr/slabs-munetic)
 
 42-기업 협력 프로젝트.
@@ -18,7 +19,7 @@ Munetic, 음악 레슨 매칭앱의 MVP(Minimum Viable Product)를 3 명씩 구�
 
 ## Installation & Execution
 
-> ❗️ 현재 서버 api 수정 작업 중인 상태로 클라이언트와 통신이 정상적으로 수행되지않습니다.. express만 로컬에서 개별적으로 실행시키는 것을 권장드립니다.
+> ❗️ 현재 서버 api 수정 작업 중인 상태로 클라이언트 app과 통신이 정상적으로 수행되지않습니다.. express와 admin만 로컬에서 개별적으로 실행시키는 것을 권장드립니다.
 
 ### 1️⃣ 로컬로 실행하는 방법
 
@@ -47,38 +48,43 @@ Munetic, 음악 레슨 매칭앱의 MVP(Minimum Viable Product)를 3 명씩 구�
 
 2. Docker로 mariadb 띄우기
 
-	- mariadb 이미지 다운로드
-	```bash
-	docker pull mariadb
-	```
-	- mariadb 컨테이너 실행 : 환경변수 설정값을 입력
-	```bash
-	docker run --name mariadb -d -p DB_PORT:3306 --restart=always -e MYSQL_ROOT_PASSWORD=DB_PASSWORD mariadb
-	```
-	- docker mariadb에 접속해 db 생성
+   - mariadb 이미지 다운로드
 
-	```bash
-	docker exec -it mariadb /bin/bash
-	```
+   ```bash
+   docker pull mariadb
+   ```
 
-	```bash
-	mysql -u root -pDB_PASSWORD
-	create database DB_NAME;
-	```
+   - mariadb 컨테이너 실행 : 환경변수 설정값을 입력
+
+   ```bash
+   docker run --name mariadb -d -p DB_PORT:3306 --restart=always -e MYSQL_ROOT_PASSWORD=DB_PASSWORD mariadb
+   ```
+
+   - docker mariadb에 접속해 db 생성
+
+   ```bash
+   docker exec -it mariadb /bin/bash
+   ```
+
+   ```bash
+   mysql -u root -pDB_PASSWORD
+   create database DB_NAME;
+   ```
 
 3. munetic_admin, munetic_app, munetic_express 각각 `npm run dev`로 실행
 
 4. munetic_express seed 추가
 
-````bash
+```bash
 npx sequelize db:seed:all
-`````
+```
 
 5. 경로 접속
 
 - app => localhost:2424
 - admin => localhost:4242/admin
 - express => localhost:3030/api
+- swagger => localhost:3030/api/swagger
 
 ### 2️⃣ 도커 컴포즈로 실행하는 방법
 
@@ -116,4 +122,6 @@ ex) localhost:3030/api/swagger
 
 - [x] 관심사별 객체로 묶어 재사용성 높이기
 - [x] Rest API 디자인 가이드에 맞춰 API 개선
+- [x] API 수정에 따른 클라이언트(admin) 재연결
+- [ ] API 수정에 따른 클라이언트(app) 재연결
 - [ ] test coverage 높이기
